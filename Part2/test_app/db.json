@@ -1,0 +1,22 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "HTML is easy",
+      "date": "2022-1-17T17:30:31.098Z",
+      "important": true
+    },
+    {
+      "content": "a new note...kkk",
+      "date": "2022-07-24T22:58:51.824Z",
+      "important": false,
+      "id": 2
+    },
+    {
+      "content": ".;.;.",
+      "date": "2022-07-24T22:59:08.413Z",
+      "important": false,
+      "id": 3
+    }
+  ]
+}
