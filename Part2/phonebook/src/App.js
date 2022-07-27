@@ -42,6 +42,42 @@ const Form = (props) => {
   )
 }
 
+const Notification = ({message, status}) => {
+
+  if(message === '') {
+    console.log('This should be null')
+    return null
+  }
+
+  const notificationStyleOkay =  {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  const notificationStyleError =  {
+    color: 'red',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  let notificationStyle = status ? notificationStyleOkay : notificationStyleError
+
+  return (
+    <div className='notification' style={notificationStyle}>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
 
   const [persons, setPersons] = useState([])
@@ -57,6 +93,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearchField, setNewSearchField] = useState('')
+  const [notification, setNotification] = useState('')
+  const [messageStatus, setMessageStatus] = useState(true)
 
   const handleSearchFieldChange = (event) => {
     setNewSearchField(event.target.value)
@@ -68,6 +106,10 @@ const App = () => {
   }
 
   const handleNewPerson = (event) => {
+    if(newName === '' || newNumber ==='') {
+      window.alert(`'name' or 'number' field must not be empty`)
+      return
+    }
     event.preventDefault()
     const personObject = {
       name : newName,
@@ -81,6 +123,10 @@ const App = () => {
           .then(
             setPersons(persons.filter(person => person.name !== newName).concat(personObject))
           )
+          setNotification(`${personObject.name} has been added to the phonebook`)
+          setTimeout(() => {
+            setNotification('')
+          }, 5000);
       }
     }
 
@@ -91,6 +137,10 @@ const App = () => {
           setPersons(persons.concat(response.data))
           setNewName('')
           setNewNumber('')
+          setNotification(`${personObject.name} has been added to the phonebook`)
+          setTimeout(() => {
+            setNotification('')
+          }, 5000);
         })
     }
   }
@@ -102,6 +152,15 @@ const App = () => {
       .then(() => {
         setPersons(persons.filter(person => person.id !== id))
       })
+      .catch(error => {
+        setMessageStatus(false)
+        setNotification(`Information of ${name} has already been removed from the server`)
+        setPersons(persons.filter(person => person.name !== name))
+        setTimeout(() => {
+          setMessageStatus(true)
+          setNotification('')
+        }, 5000)
+      })
     }
   }
 
@@ -109,8 +168,11 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+
+
   return (
     <div>
+      <Notification message={notification} status={messageStatus}/>
       <h2>Phonebook</h2>
       <SearchFilter newSearchField = {newSearchField} handleSearchFieldChange = {handleSearchFieldChange} />
       <h2>
